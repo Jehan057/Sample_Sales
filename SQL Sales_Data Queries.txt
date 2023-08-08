@@ -1,0 +1,152 @@
+-- Total sales rounded to two decimal places
+SELECT ROUND(SUM(QUANTITYORDERED) + SUM(PRICEEACH), 2) AS total_sales
+FROM digital-rhythm-385617.salesdata.sales;
+
+-- Top-selling products by quantity sold
+SELECT
+  PRODUCTCODE,
+  PRODUCTLINE,
+  SUM(QUANTITYORDERED) AS total_quantity_sold
+FROM digital-rhythm-385617.salesdata.sales
+GROUP BY PRODUCTCODE, PRODUCTLINE
+ORDER BY total_quantity_sold DESC;
+
+-- Most successful product lines by sales revenue
+SELECT
+  PRODUCTLINE,
+  SUM(SALES.SALES) AS total_sales
+FROM digital-rhythm-385617.salesdata.sales
+GROUP BY PRODUCTLINE
+ORDER BY total_sales DESC;
+
+-- Most successful product lines by quantity sold
+SELECT
+  PRODUCTLINE,
+  SUM(QUANTITYORDERED) AS total_quantity_sold
+FROM digital-rhythm-385617.salesdata.sales
+GROUP BY PRODUCTLINE
+ORDER BY total_quantity_sold DESC;
+
+-- Monthly sales trends
+SELECT 
+  EXTRACT(YEAR FROM ORDERDATE) AS order_year,
+  EXTRACT(MONTH FROM ORDERDATE) AS order_month,
+  SUM(SALES.SALES) AS monthly_sales
+FROM digital-rhythm-385617.salesdata.sales
+GROUP BY order_year, order_month
+ORDER BY order_year, order_month;
+
+-- Sales by territory or country
+SELECT
+  TERRITORY,
+  COUNTRY,
+  SUM(SALES.SALES) AS total_sales
+FROM digital-rhythm-385617.salesdata.sales
+GROUP BY TERRITORY, COUNTRY
+ORDER BY total_sales DESC;
+
+-- Average deal size rounded to two decimal places
+SELECT
+  ROUND(AVG(SALES.SALES), 2) AS average_deal_size
+FROM digital-rhythm-385617.salesdata.sales;
+
+-- Top high-value customers by total purchases (sales revenue)
+SELECT
+  CUSTOMERNAME,
+  SUM(SALES.SALES) AS total_purchases
+FROM digital-rhythm-385617.salesdata.sales
+GROUP BY CUSTOMERNAME
+ORDER BY total_purchases DESC;
+
+-- Product Pricing Analysis
+SELECT
+  PRODUCTCODE,
+  PRODUCTLINE,
+  AVG(PRICEEACH) AS average_price,
+  SUM(SALES.SALES) AS total_sales
+FROM digital-rhythm-385617.salesdata.sales
+GROUP BY PRODUCTCODE, PRODUCTLINE
+ORDER BY total_sales DESC;
+
+-- Order Analysis by Month
+SELECT
+  EXTRACT(YEAR FROM ORDERDATE) AS order_year,
+  EXTRACT(MONTH FROM ORDERDATE) AS order_month,
+  COUNT(DISTINCT ORDERNUMBER) AS total_orders,
+  SUM(SALES.SALES) AS total_sales
+FROM digital-rhythm-385617.salesdata.sales
+GROUP BY order_year, order_month
+ORDER BY order_year, order_month;
+
+-- Customer Geographical Analysis
+SELECT
+  COUNTRY,
+  TERRITORY,
+  COUNT(DISTINCT CUSTOMERNAME) AS total_customers,
+  SUM(SALES.SALES) AS total_sales
+FROM digital-rhythm-385617.salesdata.sales
+GROUP BY COUNTRY, TERRITORY
+ORDER BY total_sales DESC;
+
+-- Product Line Performance Analysis
+SELECT
+  PRODUCTLINE,
+  COUNT(DISTINCT PRODUCTCODE) AS total_products,
+  COUNT(DISTINCT ORDERNUMBER) AS total_orders,
+  SUM(SALES.SALES) AS total_sales
+FROM digital-rhythm-385617.salesdata.sales
+GROUP BY PRODUCTLINE
+ORDER BY total_sales DESC;
+
+-- Quarterly Sales Performance Analysis
+SELECT
+  EXTRACT(YEAR FROM ORDERDATE) AS order_year,
+  CASE
+    WHEN EXTRACT(MONTH FROM ORDERDATE) BETWEEN 1 AND 3 THEN 1
+    WHEN EXTRACT(MONTH FROM ORDERDATE) BETWEEN 4 AND 6 THEN 2
+    WHEN EXTRACT(MONTH FROM ORDERDATE) BETWEEN 7 AND 9 THEN 3
+    ELSE 4
+  END AS order_quarter,
+  COUNT(DISTINCT ORDERNUMBER) AS total_orders,
+  SUM(SALES.SALES) AS total_sales
+FROM digital-rhythm-385617.salesdata.sales
+GROUP BY order_year, order_quarter
+ORDER BY order_year, order_quarter;
+
+-- Sales by Status Analysis
+SELECT
+  STATUS,
+  COUNT(DISTINCT ORDERNUMBER) AS total_orders,
+  SUM(SALES.SALES) AS total_sales
+FROM digital-rhythm-385617.salesdata.sales
+GROUP BY STATUS
+ORDER BY total_sales DESC;
+
+-- Product Sales Distribution Analysis
+SELECT
+  PRODUCTCODE,
+  COUNT(DISTINCT ORDERNUMBER) AS total_orders,
+  SUM(SALES.SALES) AS total_sales
+FROM digital-rhythm-385617.salesdata.sales
+GROUP BY PRODUCTCODE
+ORDER BY total_sales DESC;
+
+-- Customer Demographics Analysis
+SELECT
+  COUNTRY,
+  STATE,
+  CITY,
+  COUNT(DISTINCT CUSTOMERNAME) AS total_customers,
+  SUM(SALES.SALES) AS total_sales
+FROM digital-rhythm-385617.salesdata.sales
+GROUP BY COUNTRY, STATE, CITY
+ORDER BY total_sales DESC;
+
+-- Sales by Deal Size Analysis
+SELECT
+  DEALSIZE,
+  COUNT(DISTINCT ORDERNUMBER) AS total_orders,
+  SUM(SALES.SALES) AS total_sales
+FROM digital-rhythm-385617.salesdata.sales
+GROUP BY DEALSIZE
+ORDER BY total_sales DESC;
